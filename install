@@ -1,0 +1,14 @@
+#!/bin/sh
+printf "... "
+cp -r dingchat-linux-x64 /usr/local
+
+echo """[Desktop Entry]
+Name = Ding Chat
+Exec=/usr/local/dingchat-linux-x64/dingchat
+Icon=/usr/local/dingchat-linux-x64/dingchat.png
+Terminal=false
+Type=Application
+""" > /usr/share/applications/dingchat-linux-x64.desktop
+
+rm -r ../../dingchat-linux-x64
+printf "OK\n"
