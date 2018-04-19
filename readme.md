@@ -17,5 +17,4 @@ sudo ./install
 
 ## 预览
 
-![](https://raw.githubusercontent.com/yan-xz/dingchat/master/img/dingm1.png)
 ![](https://raw.githubusercontent.com/yan-xz/dingchat/master/img/dingmm.png)
