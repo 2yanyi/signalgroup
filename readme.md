@@ -1,4 +1,4 @@
-# DingChat
+# Ding Chat
 Linux GNOME 钉钉 客户端
 
 <br>
