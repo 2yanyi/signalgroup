@@ -9,8 +9,7 @@ Linux GNOME 钉钉 客户端
 3. 进入 dingchat-linux-x64/dist
 4. 执行
 ```
-sudo chmod +x install
-sudo ./install
+sudo sh install
 ```
 
 <br>
