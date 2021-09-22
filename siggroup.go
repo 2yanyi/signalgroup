@@ -1,16 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 package siggroup
 
 import (
-	"fmt"
-	"github.com/matsuwin/fuseutil/siggroup/errcause"
+	"io/ioutil"
 	"os"
 	"os/signal"
+	"siggroup/errcause"
 	"syscall"
 )
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Quit Send process exit signal
 func Quit() {
@@ -33,10 +29,10 @@ func Add(routine func()) {
 // Wait Listen process exit signal
 func Wait(cancel func()) {
 	signal.Notify(sig, _signal...)
-	for _s := range sig {
+	for message := range sig {
 		for i := range _signal {
-			if _s == _signal[i] {
-				fmt.Printf("os.Exit: %s\n", _signal[i])
+			if message == _signal[i] {
+				_ = ioutil.WriteFile("signal.txt", []byte(message.String()), 0666)
 				if cancel != nil {
 					cancel()
 				}
@@ -45,8 +41,6 @@ func Wait(cancel func()) {
 		}
 	}
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var _signal = []os.Signal{
 	syscall.SIGHUP,  //  1:  hangup
@@ -60,10 +54,6 @@ var _signal = []os.Signal{
 	syscall.SIGSEGV, // 11:  segmentation fault
 	syscall.SIGALRM, // 14:  alarm clock
 	syscall.SIGTERM, // 15:  terminated
-
-	// 无法监听&忽略
-	//syscall.SIGKILL, //  9:  killed
-	//syscall.SIGPIPE, // 13:  broken pipe
 }
 
 var sig = make(chan os.Signal)

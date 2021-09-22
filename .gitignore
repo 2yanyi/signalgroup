@@ -1,1 +1,4 @@
 .idea
+errcause/panic.*.log
+panic.*.log
+signal.txt
