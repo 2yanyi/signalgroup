@@ -4,7 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"siggroup/errcause"
+	"r/pkg/fuseutil/siggroup/errcause"
+	"sync/atomic"
 	"syscall"
 )
 
@@ -15,6 +16,7 @@ func Quit() {
 
 // Add new Goroutine
 func Add(routine func()) {
+	atomic.AddInt32(&countWork, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -28,6 +30,9 @@ func Add(routine func()) {
 
 // Wait Listen process exit signal
 func Wait(cancel func()) {
+	if countWork == 0 {
+		return
+	}
 	signal.Notify(sig, _signal...)
 	for message := range sig {
 		for i := range _signal {
@@ -57,3 +62,4 @@ var _signal = []os.Signal{
 }
 
 var sig = make(chan os.Signal)
+var countWork int32
