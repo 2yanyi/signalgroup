@@ -3,8 +3,9 @@ package errcause_test
 import (
 	"github.com/pkg/errors"
 	"io/ioutil"
-	"github.com/matsuwin/siggroup/x/errcause"
 	"testing"
+
+	"github.com/matsuwin/siggroup/x/errcause"
 )
 
 func Test(t *testing.T) {

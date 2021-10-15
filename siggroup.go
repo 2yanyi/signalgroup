@@ -4,9 +4,10 @@ import (
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"github.com/matsuwin/siggroup/x/errcause"
 	"sync/atomic"
 	"syscall"
+
+	"github.com/matsuwin/siggroup/x/errcause"
 )
 
 // Quit Send process exit signal

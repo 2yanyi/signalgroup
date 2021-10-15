@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/matsuwin/siggroup"
 	"github.com/pkg/errors"
 	"io/ioutil"
-	"github.com/matsuwin/siggroup"
 	"time"
 )
 
