@@ -9,7 +9,7 @@ import (
 )
 
 // SetUsageResource 软件使用资源限制
-// cpu: 10% (单核)
+// cpu: 100% (单核)
 // mem: 80MB
 func SetUsageResource(pid, cpu, mem int) error {
 	cpuMax := int64(cpu * 1000)

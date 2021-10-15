@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"r/pkg/fuseutil/siggroup/errcause"
+	"r/siggroup/x/errcause"
 	"sync/atomic"
 	"syscall"
 )
@@ -14,8 +14,8 @@ func Quit() {
 	sig <- syscall.SIGQUIT
 }
 
-// Add new Goroutine
-func Add(routine func()) {
+// Async new Goroutine
+func Async(routine func()) {
 	atomic.AddInt32(&countWork, 1)
 	go func() {
 		defer func() {

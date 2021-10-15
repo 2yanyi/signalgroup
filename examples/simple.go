@@ -2,20 +2,20 @@ package main
 
 import (
 	"fmt"
-	"siggroup"
+	"r/siggroup"
 	"time"
 )
 
 func main() {
 	fmt.Println("program running.")
 
-	siggroup.Add(func() {
+	siggroup.Async(func() {
 		fmt.Println("work_1 ...")
 		for {
 		}
 	})
 
-	siggroup.Add(func() {
+	siggroup.Async(func() {
 		fmt.Println("work_2 ...")
 		time.Sleep(time.Second)
 	})
