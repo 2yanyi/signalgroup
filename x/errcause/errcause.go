@@ -21,6 +21,15 @@ func Fetch(err error) string {
 func Keep(err interface{}) {
 	RFC3339Nano := time.Now().Local().Format(time.RFC3339Nano)
 	defer func() {
+		/*
+		 * 错误恢复 recover 工作方式
+		 *
+		 * 没有 recover:
+		 *     触发 panic 后开始向上 (函数调用链) 传递错误，到达当前 goroutine 顶层时会退出整个进程！！！
+		 *
+		 * 有 recover:
+		 *     触发 panic 后开始向上传递错误，遇见第一个 recover 后结束传递，达到恢复的效果。
+		 */
 		if ei := recover(); ei != nil {
 			message := fmt.Sprintf("errcause: Error message keep failed: %s", ei)
 			save(RFC3339Nano, message)

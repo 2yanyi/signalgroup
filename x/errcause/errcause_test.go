@@ -3,7 +3,7 @@ package errcause_test
 import (
 	"github.com/pkg/errors"
 	"io/ioutil"
-	"siggroup/errcause"
+	"r/siggroup/x/errcause"
 	"testing"
 )
 
