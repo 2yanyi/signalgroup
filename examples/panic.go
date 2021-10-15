@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"io/ioutil"
-	"r/siggroup"
+	"github.com/matsuwin/siggroup"
 	"time"
 )
 

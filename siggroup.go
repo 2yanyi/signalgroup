@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"r/siggroup/x/errcause"
+	"github.com/matsuwin/siggroup/x/errcause"
 	"sync/atomic"
 	"syscall"
 )

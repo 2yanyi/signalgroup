@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"r/siggroup"
+	"github.com/matsuwin/siggroup"
 	"time"
 )
 
