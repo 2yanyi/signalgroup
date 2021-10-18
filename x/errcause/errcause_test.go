@@ -1,9 +1,10 @@
-package main
+package errcause_test
 
 import (
 	"github.com/matsuwin/siggroup/x/errcause"
 	"github.com/pkg/errors"
 	"io/ioutil"
+	"testing"
 )
 
 func mkError() error {
@@ -11,8 +12,8 @@ func mkError() error {
 	return errors.New(err.Error())
 }
 
-func main() {
-	
+func Test(t *testing.T) {
+
 	// 错误恢复 recover call errcause.Keep
 	defer func() {
 		if ei := recover(); ei != nil {
