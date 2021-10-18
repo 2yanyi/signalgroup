@@ -1,13 +1,7 @@
 # siggroup
-基于系统信号量的多任务并行管理组
+基于系统信号量的异步任务并行管理组
 
 <br>
-
-## Installing
-
-```
-go get github.com/matsuwin/siggroup
-```
 
 ## Quick Start
 
@@ -35,9 +29,17 @@ work_1 ...
 :shutdown
 ```
 
+## Installing
+
+```
+go get github.com/matsuwin/siggroup
+```
+
 <br>
 
-## X errcause
+# X
+
+**errcause**
 
 ```go
 package main
