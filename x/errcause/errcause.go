@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -35,9 +36,14 @@ func Keep(err interface{}) {
 			save(RFC3339Nano, message)
 		}
 	}()
-	message := Fetch(err.(error))
-	message = fmt.Sprintf("[  ERROR  ] %s\n%s\n\n", RFC3339Nano, message)
-	save(RFC3339Nano, message)
+	if reflect.TypeOf(err).String() == "string" {
+		message := fmt.Sprintf("[  ERROR  ] %s -> %s\n", RFC3339Nano, err)
+		save(RFC3339Nano, message)
+	} else {
+		message := Fetch(err.(error))
+		message = fmt.Sprintf("[  ERROR  ] %s\n%s\n\n", RFC3339Nano, message)
+		save(RFC3339Nano, message)
+	}
 }
 
 func save(RFC3339Nano, message string) {
