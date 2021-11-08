@@ -42,31 +42,12 @@ go get github.com/matsuwin/siggroup
 
 **errcause**
 
+```
+import "github.com/matsuwin/siggroup/x/errcause"
+```
 ```go
-package main
-
-import (
-    "github.com/matsuwin/siggroup/x/errcause"
-    "github.com/pkg/errors"
-    "io/ioutil"
-)
-
-func mkError() (_ error) {
-    _, err := ioutil.ReadFile("xxx.txt")
-    if err != nil {
-        return errors.New(err.Error())
-    }
-    return
-}
-
-func main() {
-
-    // 错误恢复 recover call errcause.Keep
+go func() {
     defer errcause.Recover()
-
-    // 模拟一个错误抛出调用
-    if err := mkError(); err != nil {
-        panic(err)
-    }
-}
+    // ...
+}()
 ```
