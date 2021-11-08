@@ -16,16 +16,12 @@ func Quit() {
 }
 
 // Async new Goroutine
-func Async(routine func()) {
+func Async(routine func() error) {
 	atomic.AddInt32(&countWork, 1)
 	go func() {
-		defer func() {
-			if err := recover(); err != nil {
-				errcause.Keep(err)
-			}
-			Quit()
-		}()
-		routine()
+		defer errcause.Recover()
+		defer Quit()
+		_ = routine()
 	}()
 }
 
