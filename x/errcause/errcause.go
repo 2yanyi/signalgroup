@@ -9,8 +9,18 @@ import (
 	"time"
 )
 
-// Fetch 从 error 中获取包含堆栈记录的错误根本原因
-func Fetch(err error) string {
+/*
+ * # 错误恢复: (recover) 的工作方式
+ *
+ * 没有 recover:
+ *     触发 panic 后开始向上 (函数调用链) 传递错误，到达当前 goroutine 顶层时会退出整个进程！！！
+ *
+ * 有 recover:
+ *     触发 panic 后开始向上传递错误，遇见第一个 recover 后结束传递，达到恢复的效果。
+ */
+
+// Cause 从 error 中获取包含堆栈记录的错误根本原因
+func Cause(err error) string {
 	message := fmt.Sprintf("panic: %+v", errors.Cause(err))
 	if strings.Count(message, "runtime.goexit") == 0 {
 		message = fmt.Sprintf("(Not github.com/pkg/errors.New) panic: %+v", errors.New(err.Error()))
@@ -18,31 +28,39 @@ func Fetch(err error) string {
 	return message
 }
 
-// Keep 内部调用 Fetch 并将结果输出到文件
-func Keep(err interface{}) {
-	RFC3339Nano := time.Now().Local().Format(time.RFC3339Nano)
-	defer func() {
-		/*
-		 * 错误恢复 recover 工作方式
-		 *
-		 * 没有 recover:
-		 *     触发 panic 后开始向上 (函数调用链) 传递错误，到达当前 goroutine 顶层时会退出整个进程！！！
-		 *
-		 * 有 recover:
-		 *     触发 panic 后开始向上传递错误，遇见第一个 recover 后结束传递，达到恢复的效果。
-		 */
-		if ei := recover(); ei != nil {
-			message := fmt.Sprintf("errcause: Error message keep failed: %s", ei)
-			save(RFC3339Nano, message)
+// Recover panic! Error recovery
+//
+// Old:
+// go func() {
+//     defer func() {
+//         if ei := recover(); ei != nil {
+//             // ...
+//         }
+//     }()
+// }()
+//
+// New:
+// go func() {
+//     defer errcause.Recover()
+// }()
+//
+func Recover() {
+	if err := recover(); err != nil {
+		RFC3339Nano := time.Now().Local().Format(time.RFC3339Nano)
+		if witch {
+			if reflect.TypeOf(err).String() == "string" {
+				message := fmt.Sprintf("[  ERROR  ] %s -> %s\n", RFC3339Nano, err)
+				save(RFC3339Nano, message)
+			} else {
+				message := fmt.Sprintf("[  ERROR  ] %s\n%s\n\n", RFC3339Nano, Cause(err.(error)))
+				save(RFC3339Nano, message)
+			}
+			go func() {
+				time.Sleep(time.Second)
+				witch = true
+			}()
 		}
-	}()
-	if reflect.TypeOf(err).String() == "string" {
-		message := fmt.Sprintf("[  ERROR  ] %s -> %s\n", RFC3339Nano, err)
-		save(RFC3339Nano, message)
-	} else {
-		message := Fetch(err.(error))
-		message = fmt.Sprintf("[  ERROR  ] %s\n%s\n\n", RFC3339Nano, message)
-		save(RFC3339Nano, message)
+		witch = false
 	}
 }
 
@@ -52,3 +70,5 @@ func save(RFC3339Nano, message string) {
 	_, _ = f.WriteString(message)
 	_ = f.Close()
 }
+
+var witch = true
