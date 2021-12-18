@@ -11,12 +11,13 @@ import (
 func main() {
 	fmt.Println("program running.")
 
-	siggroup.Async(func() {
+	siggroup.Async(func() (_ error) {
 		fmt.Println("work_1 ...")
 		time.Sleep(time.Second)
 		if _, err := ioutil.ReadFile("xxx.txt"); err != nil {
 			panic(errors.New(err.Error()))
 		}
+		return
 	})
 
 	// wait.

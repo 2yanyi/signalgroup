@@ -10,7 +10,7 @@ import (
 )
 
 /*
- * # 错误恢复: (recover) 的工作方式
+ * 错误恢复, recover 工作方式
  *
  * 没有 recover:
  *     触发 panic 后开始向上 (函数调用链) 传递错误，到达当前 goroutine 顶层时会退出整个进程！！！
@@ -33,7 +33,7 @@ func Cause(err error) string {
 // Old:
 // go func() {
 //     defer func() {
-//         if ei := recover(); ei != nil {
+//         if err := recover(); err != nil {
 //             // ...
 //         }
 //     }()
