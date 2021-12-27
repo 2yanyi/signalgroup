@@ -1,7 +1,6 @@
 package user
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -114,9 +113,6 @@ func lookup(username, uid string) (*User, error) {
 }
 
 func cat(fp string) string {
-	data, err := ioutil.ReadFile(fp)
-	if err != nil {
-		return ""
-	}
+	data, _ := os.ReadFile(fp)
 	return string(data)
 }

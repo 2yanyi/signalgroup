@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/matsuwin/siggroup"
 	"github.com/pkg/errors"
-	"io/ioutil"
+	"os"
 	"time"
 )
 
@@ -14,7 +14,7 @@ func main() {
 	siggroup.Async(func() (_ error) {
 		fmt.Println("work_1 ...")
 		time.Sleep(time.Second)
-		if _, err := ioutil.ReadFile("xxx.txt"); err != nil {
+		if _, err := os.ReadFile("xxx.txt"); err != nil {
 			panic(errors.New(err.Error()))
 		}
 		return

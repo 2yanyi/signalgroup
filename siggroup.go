@@ -1,7 +1,6 @@
 package siggroup
 
 import (
-	"io/ioutil"
 	"os"
 	"os/signal"
 	"sync/atomic"
@@ -34,7 +33,7 @@ func Wait(cancel func()) {
 	for message := range sig {
 		for i := range _signal {
 			if message == _signal[i] {
-				_ = ioutil.WriteFile("signal.txt", []byte(message.String()), 0666)
+				_ = os.WriteFile("signal.txt", []byte(message.String()), 0666)
 				if cancel != nil {
 					cancel()
 				}

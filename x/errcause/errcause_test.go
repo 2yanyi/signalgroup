@@ -2,7 +2,7 @@ package errcause_test
 
 import (
 	"github.com/pkg/errors"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/matsuwin/siggroup/x/errcause"
@@ -17,7 +17,7 @@ func Test(t *testing.T) {
 }
 
 func mkError() (_ error) {
-	_, err := ioutil.ReadFile("xxx.txt")
+	_, err := os.ReadFile("xxx.txt")
 	if err != nil {
 		return errors.New(err.Error())
 	}
