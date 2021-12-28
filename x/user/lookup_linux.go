@@ -1,6 +1,7 @@
 package user
 
 import (
+	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -86,9 +87,17 @@ func Current() (*User, error) {
 }
 
 func lookup(username, uid string) (*User, error) {
-	u := User{}
-	txt := cat("/etc/passwd")
-	for _, elem := range strings.Split(txt, "\n") {
+	if username != "" {
+		if user, has := cache[username]; has {
+			return user, nil
+		}
+	} else if uid != "" {
+		if user, has := cache[uid]; has {
+			return user, nil
+		}
+	}
+	var u = &User{}
+	for _, elem := range strings.Split(cat("/etc/passwd"), "\n") {
 		ssp := strings.Split(elem, ":")
 		if len(ssp) != 7 {
 			continue
@@ -99,20 +108,24 @@ func lookup(username, uid string) (*User, error) {
 			if u.Username != username {
 				continue
 			}
-		} else {
-			if u.Uid != uid {
-				continue
-			}
+		} else if u.Uid != uid {
+			continue
 		}
 		u.Gid = ssp[3]
 		u.HomeDir = ssp[5]
 		u.Name = u.Username
+
+		cache[u.Uid] = u
+		cache[u.Name] = u
+
 		break
 	}
-	return &u, nil
+	return u, nil
 }
 
 func cat(fp string) string {
-	data, _ := os.ReadFile(fp)
+	data, _ := ioutil.ReadFile(fp)
 	return string(data)
 }
+
+var cache = make(map[string]*User)
