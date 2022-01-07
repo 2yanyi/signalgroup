@@ -1,4 +1,4 @@
-package siggroup
+package signalgroup
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 	"sync/atomic"
 	"syscall"
 
-	"github.com/matsuwin/siggroup/x/errcause"
+	"github.com/utilgo/errcause"
 )
 
 // Quit Send process exit signal
