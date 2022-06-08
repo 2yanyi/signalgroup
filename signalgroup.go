@@ -1,13 +1,32 @@
 package signalgroup
 
 import (
+	"fmt"
 	"os"
+	"os/exec"
 	"os/signal"
+	"runtime"
 	"sync/atomic"
 	"syscall"
+	"time"
 
-	"github.com/utilgo/errcause"
+	"github.com/matsuwin/errcause"
 )
+
+func shutdownHistory(message string) {
+	fp := "shutdown.history"
+	ti := time.Now().Local().Format("2006-01-02.15:04:05")
+	sh := fmt.Sprintf("echo %s %s >> %s", ti, message, fp)
+	var err error
+	if runtime.GOOS == "windows" {
+		err = exec.Command("cmd", "/c", sh).Run()
+	} else {
+		err = exec.Command("sh", "-c", sh).Run()
+	}
+	if err != nil {
+		println(err.Error())
+	}
+}
 
 // Quit Send process exit signal
 func Quit() {
@@ -29,11 +48,11 @@ func Wait(cancel func()) {
 	if countWork == 0 {
 		return
 	}
-	signal.Notify(sig, _signal...)
+	signal.Notify(sig, signals...)
 	for message := range sig {
-		for i := range _signal {
-			if message == _signal[i] {
-				_ = os.WriteFile("signal.txt", []byte(message.String()), 0666)
+		for i := range signals {
+			if message == signals[i] {
+				shutdownHistory(message.String())
 				if cancel != nil {
 					cancel()
 				}
@@ -43,7 +62,7 @@ func Wait(cancel func()) {
 	}
 }
 
-var _signal = []os.Signal{
+var signals = []os.Signal{
 	syscall.SIGHUP,  //  1:  hangup
 	syscall.SIGINT,  //  2:  interrupt
 	syscall.SIGQUIT, //  3:  quit

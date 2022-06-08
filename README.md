@@ -1,6 +1,6 @@
 # signalgroup
 
-基于操作系统信号量的异步任务并行控制器，思想借鉴 errgroup。
+基于操作系统信号量的异步任务并行控制器。
 
 <br>
 
@@ -22,18 +22,12 @@ signalgroup.Async(func() (_ error) {
 
 // 等待任务结束，注意！只要有一个任务退出就退出所有。
 signalgroup.Wait(func() {
-    fmt.Println(":shutdown")
+    fmt.Println("<- shutdown")
     return
 })
 ```
 ```
 work_2 ...
 work_1 ...
-:shutdown
-```
-
-## Installing
-
-```
-go get github.com/matsuwin/signalgroup
+<- shutdown
 ```
