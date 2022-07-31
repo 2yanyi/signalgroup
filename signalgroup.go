@@ -13,10 +13,10 @@ import (
 	"github.com/matsuwin/errcause"
 )
 
-func shutdownHistory(message string) {
-	fp := "shutdown.history"
-	ti := time.Now().Local().Format("2006-01-02.15:04:05")
-	sh := fmt.Sprintf("echo %s %s >> %s", ti, message, fp)
+func exitHistory(message string) {
+	fp := "exit.history"
+	ti := time.Now().Local().Format("20060102.150405")
+	sh := fmt.Sprintf("echo '%s %s' >> %s", ti, message, fp)
 	var err error
 	if runtime.GOOS == "windows" {
 		err = exec.Command("cmd", "/c", sh).Run()
@@ -34,12 +34,12 @@ func Quit() {
 }
 
 // Async new Goroutine
-func Async(routine func() error) {
+func Async(worker func() error) {
 	atomic.AddInt32(&countWork, 1)
 	go func() {
 		defer errcause.Recover()
 		defer Quit()
-		_ = routine()
+		_ = worker()
 	}()
 }
 
@@ -48,32 +48,29 @@ func Wait(cancel func()) {
 	if countWork == 0 {
 		return
 	}
-	signal.Notify(sig, signals...)
+	ls := make([]os.Signal, 0, 15)
+	for i := range signals {
+		ls = append(ls, i)
+	}
+	signal.Notify(sig, ls...)
 	for message := range sig {
-		for i := range signals {
-			if message == signals[i] {
-				shutdownHistory(message.String())
-				if cancel != nil {
-					cancel()
-				}
-				return
-			}
+		exitHistory(signals[message])
+		if cancel != nil {
+			cancel()
 		}
+		return
 	}
 }
 
-var signals = []os.Signal{
-	syscall.SIGHUP,  //  1:  hangup
-	syscall.SIGINT,  //  2:  interrupt
-	syscall.SIGQUIT, //  3:  quit
-	syscall.SIGILL,  //  4:  illegal instruction
-	syscall.SIGTRAP, //  5:  trace/breakpoint trap
-	syscall.SIGABRT, //  6:  aborted
-	syscall.SIGBUS,  //  7:  bus error
-	syscall.SIGFPE,  //  8:  floating point exception
-	syscall.SIGSEGV, // 11:  segmentation fault
-	syscall.SIGALRM, // 14:  alarm clock
-	syscall.SIGTERM, // 15:  terminated
+var signals = map[os.Signal]string{
+	syscall.SIGHUP:  "(SIGHUP)  1  终端挂断，终端 session 结束。",
+	syscall.SIGINT:  "(SIGINT)  2  进程中断，如 Ctrl-C，通常由用户触发。",
+	syscall.SIGQUIT: "(SIGQUIT) 3  进程退出，如 Ctrl-\\，或内部 Quit 调用。",
+	syscall.SIGILL:  "(SIGILL)  4  非法指令，代码错误。",
+	syscall.SIGFPE:  "(SIGFPE)  8  运算异常，代码错误。",
+	syscall.SIGSEGV: "(SIGSEGV) 11 分段冲突，代码错误。",
+	syscall.SIGPIPE: "(SIGPIPE) 13 管道破裂，进程间通信故障。",
+	syscall.SIGTERM: "(SIGTERM) 15 终止进程，如 kill，通常由进程外部触发。",
 }
 
 var sig = make(chan os.Signal)
