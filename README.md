@@ -7,17 +7,15 @@ Async work parallel controller based on system signals.
 ## Quick Start
 
 ```go
-// Add work_1 in background.
-signalgroup.Async(func() (_ error) {
+signalgroup.Async(func() error {
     fmt.Println("work_1 ...")
     for {}
 })
 
-// Add work_2 keep 1s.
-signalgroup.Async(func() (_ error) {
+signalgroup.Async(func() error {
     fmt.Println("work_2 ...")
     time.Sleep(time.Second)
-    return
+    return nil
 })
 
 // Wait end. If one work exits, it ends all.
